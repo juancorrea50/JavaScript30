@@ -59,9 +59,40 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+      /*If the function uses the event as a parameter, do not use parenthesis to call the function as the event is a callback to the event itself*/
+      // EX. playSound and removeTransition use events from the addEventListener method being called and therefore do not need a parameter or parenthesis typed 
+      
+      /*The above is a note for not using anonymous or arrow functions for cleaner code */
 
+      function playSound(e){
+        const audio = document.querySelector(`audio[data-key='${e.keyCode}']`); //creates a node of the audio element connected to the key that was pressed
+        const key = document.querySelector(`.key[data-key='${e.keyCode}']`); //creates a node of the key class connected to the key pressed
+        if(!audio) return; //stop the function from running all together if there isn't audio connected to the key pressed
+        audio.currentTime = 0; //Rewind to start every key press to ensure rapid fire functionality
+        audio.play(); //Uses the play() function from the audio node to play the src sound file connected to the key
+        key.classList.add('playing');//Adds .playing to the class list for the key pressed
+      }
+
+      function removeTransition(e) {
+        if(e.propertyName !== 'transform') return;//If the key does not have a transform propertyName stop the function
+        this.classList.remove('playing');//Removes the class .playing from the node of the key pressed
+      }
+
+      const keys = document.querySelectorAll('.key');//Create a node list of all keys
+      keys.forEach(key => key.addEventListener('transitionend', removeTransition));//For each of the node list listen for the event 'transitionend' and execute removeTransition function
+      
+      window.addEventListener('keydown', playSound);//Window in this case refers to the entire window listening for the keydown event then executing the playSound function
 </script>
 
 
 </body>
 </html>
+<!--
+  This lesson is to teach a way to animate simple boxes on a page to glow when a key displayed is pressed. The process involves using the querySelector and querySelectorAll to 
+  create nodes from the HTML code and add functionality to them. The function playSound was introduced first and used the previous idea to create audio and key constant variables
+  by creating a node with the audio element. The audio element in querySelector is also paired with an attribute selector, [], with the actual data key surrounded by quotations as
+  the data-key is a string not an integer. Rest of the function is explained in comments.
+
+  Hardest part of this lesson was understanding events throughout the callbacks and some terminology and addEventListener methods still unknown to me at this stage. Research
+  done to ensure full understanding of this project.
+-->
